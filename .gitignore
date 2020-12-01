@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+spider/datas/*
+!/spider/datas/*.py
+!/spider/datas/countries/*.py
+.DS_Store
+.idea
+.vscode
