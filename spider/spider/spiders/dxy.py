@@ -32,12 +32,28 @@ class DxySpider(scrapy.Spider):
         with  open('datas/last_updated_dxy_datas.json', 'w+') as f:
             json.dump(data, f, ensure_ascii=False)
 
-        for d in data:
-            url = d['statisticsData']
-            yield scrapy.Request(url, callback=self.country_history_data_parse, meta=d)
+        # 循环 data 得到 每个国家的历史疫情数据 URL
+        for country_data in data:
+            # 表示 各国家 的历史疫情数据 URL
+            url = country_data['statisticsData']
+            #国家或地区名称
+            country_name = country_data['provinceName']
+            # 发起请求
+            yield scrapy.Request(url, callback=self.country_history_data_parse, meta={'country_name' : country_name})
 
+    # 响应历史数据请求返回结果
     def country_history_data_parse(self, response):
-        meta = response.meta['provinceName']
+        # 取出返回结果
+        # 通过 response.json()
         data = response.json()
-        with open(f'datas/countries/{meta}.json', 'w+') as f:
+        # 历史疫情数据
+        data = data.get('data')
+        # 得到 META 中的 country_name的值
+        country_name = response.meta['country_name']
+
+        # 保存数据
+        with open(f'datas/countries/{country_name}.json', 'w+') as f:
             json.dump(data, f, ensure_ascii=False)
+
+
+
