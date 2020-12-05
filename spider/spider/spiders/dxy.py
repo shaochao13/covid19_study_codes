@@ -2,6 +2,7 @@ import json
 import re
 
 import scrapy
+from spider.items import SpiderItem
 
 
 class DxySpider(scrapy.Spider):
@@ -48,12 +49,23 @@ class DxySpider(scrapy.Spider):
         data = response.json()
         # 历史疫情数据
         data = data.get('data')
+
         # 得到 META 中的 country_name的值
         country_name = response.meta['country_name']
 
-        # 保存数据
-        with open(f'datas/countries/{country_name}.json', 'w+') as f:
-            json.dump(data, f, ensure_ascii=False)
+        # 循环 历史数据，给每一条数据添加一个country_name 字段，以标注它是属于哪一个国家的数据
+        for d in data:
+            d['country_name'] = country_name
+
+        # # 保存数据
+        # with open(f'datas/countries/{country_name}.json', 'w+') as f:
+        #     json.dump(data, f, ensure_ascii=False)
+
+        # 通过 Pipeline 方式进行数据的统一保存
+        item = SpiderItem()
+        item['data'] = data
+        yield item
+
 
 
 
