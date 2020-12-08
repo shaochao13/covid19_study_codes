@@ -1,4 +1,6 @@
 import json
+import os
+import pathlib
 import re
 
 import scrapy
@@ -21,7 +23,7 @@ class DxySpider(scrapy.Spider):
         # print(data_txt)
         # 1.2 response.css()
         data_txt = response.css('#getListByCountryTypeService2true::text').get()
-
+        print(f'工作目录：{os.getcwd()}')
 
         # 2 清洗数据
         # 2.1 通过正则匹配出“[]”中的字符串
@@ -57,9 +59,16 @@ class DxySpider(scrapy.Spider):
         for d in data:
             d['country_name'] = country_name
 
+        file_path = f'datas/countries/{country_name}.json'
+        #文件的上一级路径
+        parent_path = pathlib.PosixPath(file_path).parent
+        # 如果文件的上一级不存在，则创建
+        if not parent_path.exists():
+            #进行㠌套创建目录
+            parent_path.mkdir(parents=True)
         # # 保存数据
-        # with open(f'datas/countries/{country_name}.json', 'w+') as f:
-        #     json.dump(data, f, ensure_ascii=False)
+        with open(file_path), 'w+') as f:
+            json.dump(data, f, ensure_ascii=False)
 
         # 通过 Pipeline 方式进行数据的统一保存
         item = SpiderItem()
