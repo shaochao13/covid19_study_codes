@@ -2,12 +2,35 @@ import datetime
 import pathlib
 import pickle
 import random
+import sys
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import pandas as pd
 
+data_type_dict_str = {
+    '1': '累积确诊人数',
+    '2': '现存确诊人数',
+    '3': '累积死亡人数',
+    '4': '累积治愈人数',
+}
+
+data_type_dict = {
+    '1': 'confirmedCount',
+    '2': 'currentConfirmedCount',
+    '3': 'deadCount',
+    '4': 'curedCount',
+}
+
+# 默认展示key=1的数据
+_default_type = '1'
+# 默认显示top 10
+_default_num = 10
+# top n 的最小值
+_min_num = 1
+# top n 的最大值
+_max_num = 40
 
 # 用来给每一个国家分配一个颜色值
 def generate_country_colors(countries):
@@ -41,7 +64,7 @@ def generate_country_colors(countries):
     return country_color_map
 
 # 主函数，入口
-def handle_data_draw_chart():
+def handle_data_draw_chart(t, num):
     # 第一步，加载历史疫情数据
     # 通过pandas.read_json()
     datas = pd.read_json('../spider/datas/all_countris_datas.json')
@@ -49,7 +72,7 @@ def handle_data_draw_chart():
 
     # 第二步，得到要展示的数据， 先只对累积确诊人数 进行展示 即 confirmedCount
     # 得到的数据格式：每一行包括所有国家当日累积确诊人数
-    pivot_table_data = pd.pivot_table(data=datas, index=['dateId'], values='confirmedCount', columns='country_name', fill_value=0)
+    pivot_table_data = pd.pivot_table(data=datas, index=['dateId'], values=data_type_dict.get(t), columns='country_name', fill_value=0)
     # print(pivot_table_data)
     # 查看有多少个国家数据 总共有215个国家或地区数据
     # print(pivot_table_data.columns)
@@ -75,7 +98,7 @@ def handle_data_draw_chart():
         # 根据传入的day 日期，从透视表中取出这一天的所有国家的累积确诊人数的数据
         # 对数据进行降序排序
         # 取出top n
-        day_datas = pivot_table_data.loc[day].sort_values(ascending=False).head(10).sort_values()
+        day_datas = pivot_table_data.loc[day].sort_values(ascending=False).head(num).sort_values()
         # print(day_datas)
         # 通过top n 个国家的名称，取到它们对应的颜值值
         day_country_colors = [country_colors[name] for name in day_datas.index]
@@ -95,7 +118,7 @@ def handle_data_draw_chart():
         ax.xaxis.set_major_formatter(xf)
 
         # 设置标题
-        ax.set_title('Top 10 国家累积确诊人数', fontsize = 25, color='black')
+        ax.set_title(f'Top {num} 国家{data_type_dict_str.get(t)}', fontsize = 25, color='black')
 
         # 显示日期
         str2date = datetime.datetime.strptime(str(day), '%Y%m%d') # 将 day 转换为 datetime 格式
@@ -105,7 +128,57 @@ def handle_data_draw_chart():
     # _draw_barh_chart(20201201)
     ani = mpl.animation.FuncAnimation(fig, _draw_barh_chart, frames=pivot_table_data.index, repeat=False, interval=50)
 
+    # 第一个输出格式：mp4
+    # 注意事项：
+    #需要安装ffmpeg http://ffmpeg.org/download.html
+    """
+    在windows系统下：
+    ffmpegpath = os.path.abspath("./ffmpeg/bin/ffmpeg.exe")
+    matplotlib.rcParams["animation.ffmpeg_path"] = ffmpegpath
+    writer = animation.FFMpegWriter()
+    anim.save(fname,writer = writer)
+    """
+    # writer = mpl.animation.FFMpegWriter()
+    # ani.save('barh.mp4', writer=writer)
+
+    # 第二种输出格式: GIF
+    #注意事项：
+    # 需要安装imagemagick https://imagemagick.org/script/download.php
+    # mac 上可以通过 brew install imagemagick
+    ani.save('barh.gif', writer='imagemagick')
+
     plt.show()
 
+
+# 获取用户输入
+def input_data():
+    t, num = _default_type, _default_num
+    # 获取用户选择哪个数据点进行展示
+    while True:
+        print(f'请选择展示哪个数据:(默认为:{data_type_dict_str.get(_default_type)})')
+        print('1. 累积确诊人数')
+        print('2. 现存确诊人数')
+        print('3. 累积死亡人数')
+        print('4. 累积治愈人数')
+        # 获取用户的输入
+        input_type = input()
+        if data_type_dict_str.get(input_type):
+            t = input_type
+            break
+        elif input_type == '':
+            break
+    # 获取用户选择top 多少进行显示
+    while True:
+        print(f'请输入要展示TOP多少个国家的数据（{_min_num}～{_max_num}）:(默认为:{_default_num})')
+        input_num = input()
+        if input_num.isdigit() and _min_num <= int(input_num) <= _max_num:
+            num = int(input_num)
+            break
+        elif input_num == '':
+            break
+    return (t, num)
+
 if __name__ == "__main__":
-    handle_data_draw_chart()
+    t, num = input_data()
+    handle_data_draw_chart(t, num)
+
