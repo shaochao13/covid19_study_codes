@@ -67,7 +67,7 @@ class DxySpider(scrapy.Spider):
             #进行㠌套创建目录
             parent_path.mkdir(parents=True)
         # # 保存数据
-        with open(file_path), 'w+') as f:
+        with open(file_path, 'w+') as f:
             json.dump(data, f, ensure_ascii=False)
 
         # 通过 Pipeline 方式进行数据的统一保存
