@@ -8,13 +8,14 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import rgb2hex
 
-from tools.utils import handle_different_country_name, init_geom_infos
+from tools.utils import handle_different_country_name, init_geom_infos, get_last_updated_data
 
 
 # 入口函数
 def draw_last_covid_map_chart():
     # 加载最新疫情数据
-    last_datas = pd.read_json('../spider/datas/last_updated_dxy_datas.json')
+    # last_datas = pd.read_json('../spider/datas/last_updated_dxy_datas.json')
+    last_datas = get_last_updated_data()
     # print(last_datas.columns)
     #创建透视表
     pivot_table_data = last_datas.pivot_table(values='confirmedCount', index='provinceName', fill_value=0)

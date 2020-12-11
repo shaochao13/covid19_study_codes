@@ -9,13 +9,14 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import rgb2hex
 
-from tools.utils import handle_different_country_name, init_geom_infos
+from tools.utils import handle_different_country_name, init_geom_infos, get_history_data
 
 
 # 入口函数
 def draw_covid_map_chart():
     # 加载历史疫情数据
-    datas = pd.read_json('../spider/datas/all_countris_datas.json')
+    # datas = pd.read_json('../spider/datas/all_countris_datas.json')
+    datas = get_history_data()
     # print(datas.columns)
     #创建透视表
     pivot_table_data = datas.pivot_table(values='confirmedCount', index='dateId', columns='country_name', fill_value=0)

@@ -9,3 +9,4 @@ import scrapy
 class SpiderItem(scrapy.Item):
 
     data = scrapy.Field()
+    is_last_updated = scrapy.Field()

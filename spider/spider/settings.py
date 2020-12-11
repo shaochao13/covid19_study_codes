@@ -15,7 +15,7 @@ NEWSPIDER_MODULE = 'spider.spiders'
 LOG_LEVEL = 'INFO'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'spider (+http://www.yourdomain.com)'
+# USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.67 Safari/537.36'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False

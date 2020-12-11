@@ -1,5 +1,9 @@
 import pathlib
 import pickle
+from sqlalchemy import create_engine
+import pymysql
+
+import pandas as pd
 
 import cartopy.io.shapereader as shpreader
 
@@ -49,3 +53,35 @@ def init_geom_infos():
             country_geom_dict = pickle.load(f)
 
     return country_geom_dict
+
+_connect_info = "mysql+pymysql://test:123456@abcABC@192.168.0.88:3307/coronavirus?charset=utf8"
+_engine = create_engine(_connect_info)
+
+# 获取历史疫情数据
+def get_history_data():
+    sql = '''select dateId,
+                    country_name,
+                    confirmedCount,
+                    currentConfirmedCount,
+                    curedCount,
+                    deadCount from tb_virus_history_data'''
+
+    df = pd.read_sql_query(sql, con=_engine)
+    return df
+
+# 获取最新疫情数据
+def get_last_updated_data():
+
+    sql = '''select provinceName,
+                    countryShortCode,
+                    confirmedCount,
+                    currentConfirmedCount,
+                    curedCount,
+                    deadCount from tb_virus_last_updated_data'''
+
+    df = pd.read_sql_query(sql, con=_engine)
+    return df
+
+
+if __name__ == "__main__":
+    get_history_data()

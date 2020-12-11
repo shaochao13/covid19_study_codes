@@ -2,12 +2,13 @@ import datetime
 import pathlib
 import pickle
 import random
-import sys
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import pandas as pd
+
+from tools.utils import get_history_data
 
 data_type_dict_str = {
     '1': '累积确诊人数',
@@ -67,7 +68,8 @@ def generate_country_colors(countries):
 def handle_data_draw_chart(t, num):
     # 第一步，加载历史疫情数据
     # 通过pandas.read_json()
-    datas = pd.read_json('../spider/datas/all_countris_datas.json')
+    # datas = pd.read_json('../spider/datas/all_countris_datas.json')
+    datas = get_history_data()
     # print(datas)
 
     # 第二步，得到要展示的数据， 先只对累积确诊人数 进行展示 即 confirmedCount
@@ -145,7 +147,7 @@ def handle_data_draw_chart(t, num):
     #注意事项：
     # 需要安装imagemagick https://imagemagick.org/script/download.php
     # mac 上可以通过 brew install imagemagick
-    ani.save('barh.gif', writer='imagemagick')
+    # ani.save('barh.gif', writer='imagemagick')
 
     plt.show()
 
