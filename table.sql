@@ -1,18 +1,5 @@
--- {
---         "confirmedCount": 1,
---         "confirmedIncr": 1,
---         "curedCount": 0,
---         "curedIncr": 0,
---         "currentConfirmedCount": 1,
---         "currentConfirmedIncr": 1,
---         "dateId": 20200123,
---         "deadCount": 0,
---         "deadIncr": 0,
---         "suspectedCount": 0,
---         "suspectedCountIncr": 0,
---         "country_name": "美国",
---         "countryShortCode": "USA"
---     }
+CREATE DATABASE IF NOT EXISTS coronavirus DEFAULT CHARSET utf8;
+
 
 CREATE TABLE `tb_virus_history_data` (
     `countryShortCode_dateId` VARCHAR(20) NOT NULL COMMENT '数据唯一值',

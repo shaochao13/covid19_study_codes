@@ -16,7 +16,7 @@ class DxySpider(scrapy.Spider):
     start_urls = ['http://ncov.dxy.cn/ncovh5/view/pneumonia']
 
     def parse(self, response):
-        print('.......')
+
         # 1从返回对象中取值
         # 取值方式：
         # 1.1 response.xpath()
@@ -37,7 +37,7 @@ class DxySpider(scrapy.Spider):
         item['data'] = data
         yield item
 
-        # 3 保存数据
+        # # 3 保存数据
         # with  open('datas/last_updated_dxy_datas.json', 'w+') as f:
         #     json.dump(data, f, ensure_ascii=False)
 

@@ -6,6 +6,8 @@
 
 import json
 import pymysql
+# pip3 install pymysql
+from . import settings
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
@@ -15,14 +17,7 @@ class SpiderPipeline:
 
     def __init__(self):
         self.connect = pymysql.connect(
-            host="192.168.0.88",
-            port=3307,
-            db="coronavirus",
-            user="test",
-            passwd="123456@abcABC",
-            charset='utf8',
-            use_unicode=True,
-            cursorclass=pymysql.cursors.DictCursor
+            **settings.MYSQL_DB
         )
         # 通过cursor执行增删查改
         self.cursor = self.connect.cursor()
@@ -34,6 +29,8 @@ class SpiderPipeline:
 
     # 表示每次收到 item 返回时，都会执行
     def process_item(self, item, spider):
+
+        # self.datas.extend(item['data'])
 
         is_last_updated = item['is_last_updated']
         if is_last_updated:

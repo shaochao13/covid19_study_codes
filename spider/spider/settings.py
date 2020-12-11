@@ -90,3 +90,13 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+
+MYSQL_DB = {  #key务必大写
+    'host': '192.168.0.88',
+    'port': 3307,
+    'user' : 'test',
+    'password' : '123456@abcABC',
+    'database' : 'coronavirus',
+    'charset' : 'utf8'
+}
